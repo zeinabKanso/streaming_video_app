@@ -1,0 +1,14 @@
+[
+{
+  "title": "title 1",
+  "img": "http://static.mobiletv.mobibase.com/movies/content/529227/previews.73707.jpg",
+  "movie": "movie 1",
+  "duration": "65 min"
+},
+  {
+    "title": "title 2",
+    "img": "http://static.mobiletv.mobibase.com/movies/content/703496/previews.73707.jpg",
+    "movie": "movie 2",
+    "duration": "120 mins"
+  }
+]
