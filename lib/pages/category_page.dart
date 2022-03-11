@@ -8,7 +8,9 @@ import 'movie_page.dart';
 
 
 class CategoryPage extends StatefulWidget {
-  const CategoryPage ({Key? key}) : super(key: key);
+  String name;
+  CategoryPage({required this.name});
+  //const CategoryPage ({Key? key}) : super(key: key);
 
   @override
   State<CategoryPage> createState() => _CategoryPageState();

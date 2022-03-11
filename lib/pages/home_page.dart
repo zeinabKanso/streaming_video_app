@@ -7,14 +7,8 @@ import 'package:video_streaming_app/pages/category_page.dart';
 import 'package:get/get.dart';
 import 'package:video_streaming_app/main.dart';
 import 'package:video_streaming_app/pages/movie_page.dart';
-/*
-class _videoInfoState extends State<VideoInfo>{
-  List videoInfo=[];
-  _initData(){
-    DefaultAssetBundle.of(context).loadString('json/videos.json').then((value) => videoInfo= json.decode(value));
-  }
-}
-*/
+
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -24,7 +18,29 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  List data=[];
+ ReadJsonData() async {
+
+    final jsondata = await rootBundle.rootBundle.loadString('jsonfile/videos.json');
+
+    setState(() {
+      data= json.decode(jsondata) as List<dynamic>;
+    });
+
+
+    data.map((e) => MovieDataModel.fromJson(e)).toList();
+
+    print(data);
+
+  }
+
+  _initState(){
+      ReadJsonData();
+  }
+
+
   //reading data from json file
+/*
   List info=[];
   _initData(){
     DefaultAssetBundle.of(context).loadString("jsonfile/try.json").then((value){
@@ -39,15 +55,17 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
   _initData();
   }
+*/
   //
   @override
   Widget build(BuildContext context) {
 
     double h=MediaQuery.of(context).size.height;
     double w=MediaQuery.of(context).size.width;
-
+ReadJsonData();
     return Scaffold(
-          body:Container(
+          body:
+          Container(
             child:
             Column(children: [
             Row(
@@ -65,101 +83,122 @@ class _HomePageState extends State<HomePage> {
 
               ],
             ),
-            Row(
-                children: [
-                  FlatButton(
-                    onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const CategoryPage()),
-                      );
-                    }
-                    , child: Text (
-                    "Categories",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                    color: Colors.black87,
-                    minWidth: w,
-                    height: 50,
 
-                  ),
-                ],
-              ),
             SizedBox(height: 10),
 
-              Expanded(child:info!=null? ListView.builder(
-                itemCount: info.length,
-                  itemBuilder: (_,i){
-                    String? url=info[i]['img'];
-                    String name=info[i]['movie'];
-                    String duration=info[i]['duration'];
-                    return Row(
-                      children: [
+        Expanded(
+          child: data!=null? ListView.builder(
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                String? url = data[index].preview.toString();
+                String name = data[index].name.toString();
+                return Row(
+                  children: [
 
-                        Container(
-                          margin: const EdgeInsets.only(top: 10, left: 15),
-                          height: 170,
-                          width: 200,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
+                    Container(
+                      margin: const EdgeInsets.only(
+                          top: 10, left: 15),
+                      height: 170,
+                      width: 200,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
 
-                              image:  DecorationImage(
+                          image: DecorationImage(
 
-                                  image: NetworkImage(url!),
-                                    fit: BoxFit.cover),
-                            boxShadow: [
-                              BoxShadow(
+                              image: NetworkImage(url),
+                              fit: BoxFit.cover),
+                          boxShadow: [
+                            BoxShadow(
                                 blurRadius: 3,
-                                offset: Offset(5,5),
+                                offset: Offset(5, 5),
                                 color: Colors.red.withOpacity(0.2)
-                              )
-                            ]
+                            )
+                          ]
 
-                          ),
+                      ),
                     ),
-                          SizedBox(width: 20),
+                    SizedBox(width: 20),
+                  ],
+                );
+              }):Center(child: CircularProgressIndicator())
+        )
+
+
+/*
+              Expanded(
+                child:info!=null? ListView.builder(
+                  itemCount: info.length,
+                    itemBuilder: (_,i){
+                      String? url=info[i]['img'];
+                      String name=info[i]['movie'];
+                      String duration=info[i]['duration'];
+                      return Row(
+                        children: [
 
                           Container(
+                            margin: const EdgeInsets.only(top: 10, left: 15),
+                            height: 170,
+                            width: 200,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
 
-                            padding: EdgeInsets.only(bottom: 5),
-                            child:
-                            Center(
-                              child: Align(
+                                image:  DecorationImage(
 
-                              child:
-                                  Row(
-                              children: [
-                                FlatButton(onPressed: (){
-                                    Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) =>MoviePage(name: name, duration: duration)));
-                                    },
-                                    child: Text(
-                                  info[i]['title'],
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                                    image: NetworkImage(url!),
+                                      fit: BoxFit.cover),
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 3,
+                                  offset: Offset(5,5),
+                                  color: Colors.red.withOpacity(0.2)
+                                )
+                              ]
 
-                                  ),
-
-                                ))
-                              ],
-                              ),
-
-                              )
                             ),
-                          ),
-                        SizedBox(height: 10)
-                      ],
-                    );
-                  }):Center(child: CircularProgressIndicator())
-              )
+                      ),
+                            SizedBox(width: 20),
+
+                            Container(
+
+                              padding: EdgeInsets.only(bottom: 5),
+                              child:
+                              Center(
+                                child: Align(
+
+                                child:
+                                    Row(
+                                children: [
+                                  FlatButton(onPressed: (){
+                                      Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) =>MoviePage(name: name, duration: duration)));
+                                      },
+                                      child: Text(
+                                    info[i]['title'],
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+
+                                    ),
+
+                                  ))
+                                ],
+                                ),
+
+                                )
+                              ),
+                            ),
+                          SizedBox(height: 10)
+                        ],
+                      );
+                    }):Center(child: CircularProgressIndicator())
+)*/
             ]
           ),
     ),
+
     );
 
-  }
 
+
+  }
 }
