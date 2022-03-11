@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   List data=[];
- ReadJsonData() async {
+ Future<List<MovieDataModel>>ReadJsonData() async {
 
     final jsondata = await rootBundle.rootBundle.loadString('jsonfile/videos.json');
 
@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
     });
 
 
-    data.map((e) => MovieDataModel.fromJson(e)).toList();
+    return data.map((e) => MovieDataModel.fromJson(e)).toList();
 
     print(data);
 
@@ -86,41 +86,49 @@ ReadJsonData();
 
             SizedBox(height: 10),
 
-        Expanded(
-          child: data!=null? ListView.builder(
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                String? url = data[index].preview.toString();
-                String name = data[index].name.toString();
-                return Row(
-                  children: [
+        FutureBuilder(
+          future: ReadJsonData(),
+          builder: (context,data){
+            var items = data.data as List<MovieDataModel>;
+            return
+            Expanded(
+                child: data!=null? ListView.builder(
+                    itemCount: items == null ? 0 : items.length,
+                    itemBuilder: (context, index) {
+                      String? url = items[index].preview.toString();
+                      String name = items[index].name.toString();
+                      return Row(
+                        children: [
 
-                    Container(
-                      margin: const EdgeInsets.only(
-                          top: 10, left: 15),
-                      height: 170,
-                      width: 200,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
+                          Container(
+                            margin: const EdgeInsets.only(
+                                top: 10, left: 15),
+                            height: 170,
+                            width: 200,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
 
-                          image: DecorationImage(
+                                image: DecorationImage(
 
-                              image: NetworkImage(url),
-                              fit: BoxFit.cover),
-                          boxShadow: [
-                            BoxShadow(
-                                blurRadius: 3,
-                                offset: Offset(5, 5),
-                                color: Colors.red.withOpacity(0.2)
-                            )
-                          ]
+                                    image: NetworkImage(url),
+                                    fit: BoxFit.cover),
+                                boxShadow: [
+                                  BoxShadow(
+                                      blurRadius: 3,
+                                      offset: Offset(5, 5),
+                                      color: Colors.red.withOpacity(0.2)
+                                  )
+                                ]
 
-                      ),
-                    ),
-                    SizedBox(width: 20),
-                  ],
-                );
-              }):Center(child: CircularProgressIndicator())
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                        ],
+                      );
+                    }):Center(child: CircularProgressIndicator())
+            );
+          }
+
         )
 
 
