@@ -9,7 +9,8 @@ import 'package:video_streaming_app/pages/home_page.dart';
 class MoviePage extends StatefulWidget {
 
   String name;
-  MoviePage({required this.name});
+  String duration;
+  MoviePage({required this.name, required this.duration});
 
 
  // const MoviePage({Key? key}) : super(key: key);
@@ -70,7 +71,7 @@ class MoviePage extends StatefulWidget {
                      .of(context)
                      .size
                      .width,
-                 height: 300,
+                 height: 350,
                  child: Column(
                    children: [
                      Row(
@@ -110,8 +111,10 @@ class MoviePage extends StatefulWidget {
                                Icon(Icons.timer,
                                    size: 20,
                                    color: Colors.white),
-                               SizedBox(width: 5,),
-                                Text("120 mins")
+                               SizedBox(width: 5),
+                                Text(
+                                widget.duration,
+                                )
                              ],
                            ),
                          )
@@ -121,7 +124,10 @@ class MoviePage extends StatefulWidget {
                      //screen
 
                      _playView(context),
-                     _controlView(context),/*
+                     SizedBox(height: 10),
+                     _controlView(context),
+                     SizedBox(height: 10),
+                     /*
                      Container(
 
                        width: MediaQuery.of(context).size.width-20,
@@ -151,6 +157,7 @@ class MoviePage extends StatefulWidget {
                    itemBuilder: (_,i){
                      String? url=info[i]['img'];
                      String name=info[i]['movie'];
+                     String duration=info[i]['duration'];
                      return Row(
                        children: [
 
@@ -189,7 +196,7 @@ class MoviePage extends StatefulWidget {
                                    children: [
                                      FlatButton(onPressed: (){
                                        Navigator.push(context,
-                                           MaterialPageRoute(builder: (context) =>MoviePage(name: name)));
+                                           MaterialPageRoute(builder: (context) =>MoviePage(name: name, duration: duration)));
                                      },
                                          child: Text(
                                            info[i]['title'],
@@ -219,16 +226,67 @@ class MoviePage extends StatefulWidget {
      );
    }
    Widget _controlView(BuildContext context){
+     final noMute =(_controller?.value?.volume??0)>0;
      return Container(
-       height: 120,
+       height: 35,
        width: MediaQuery.of(context).size.width,
        color: Colors.redAccent,
        child: Row(
          mainAxisAlignment: MainAxisAlignment.center,
          children: [
+           InkWell(
+             child: Padding(
+               padding: EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+               child: Container(
+                 decoration: BoxDecoration(
+                   shape: BoxShape.circle,
+                   boxShadow: [
+                     BoxShadow(
+                       offset: Offset(0.0,0.0),
+                       blurRadius: 5.0,
+                       color: Color.fromARGB(50, 0, 0, 0),
+                     )
+                   ]
+                 ),
+                 child: Icon(
+                   noMute?Icons.volume_up:Icons.volume_off,
+                   color: Colors.white,
+                 ),
+               ),
+             ),
+             onTap: (){
+               if(noMute){
+                 _controller?.setVolume(0);
+               }else{
+                 _controller?.setVolume(1.0);
+               }
+               setState(() {
+
+               });
+             },
+           ),
            FlatButton(
                onPressed: ()async{
                  final index=_isPlayingIndex-1;
+                 if(index>=0&& info.length>=0){
+                   _initializeVideo(index);
+                 }
+                 else{
+                   Get.snackbar("Video", "",
+                       snackPosition: SnackPosition.BOTTOM,
+                       icon: Icon(Icons.face,
+                           size: 20,
+                           color: Colors.white
+                       ),
+                       backgroundColor: Colors.red.shade900,
+                       colorText: Colors.white,
+                       messageText: Text("No more video to play",
+                         style: TextStyle(
+                             fontSize: 15,
+                             color: Colors.white
+                         ),)
+                   );
+                 }
                },
                child: Icon(Icons.fast_rewind,
                size: 36,
@@ -252,7 +310,25 @@ class MoviePage extends StatefulWidget {
                  color: Colors.white,)),
            FlatButton(
                onPressed: ()async{
-
+                 final index=_isPlayingIndex;
+                 if(index<=info.length-1){
+                   _initializeVideo(index);
+                 }else{
+                   Get.snackbar("Video List", "",
+                   snackPosition: SnackPosition.BOTTOM,
+                   icon: Icon(Icons.face,
+                   size: 20,
+                   color: Colors.white
+                   ),
+                     backgroundColor: Colors.red.shade900,
+                     colorText: Colors.white,
+                     messageText: Text("No more videos in the list",
+                     style: TextStyle(
+                       fontSize: 15,
+                       color: Colors.white
+                     ),)
+                   );
+                 }
                },
                child: Icon(Icons.fast_forward,
                  size: 36,
@@ -310,7 +386,7 @@ class MoviePage extends StatefulWidget {
        return;
      }
 
-     //_onUpdateControllerTime=now+500;
+     _onUpdateControllerTime=now+500;
 
      final controller= _controller;
      if(controller==null){

@@ -23,6 +23,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  //reading data from json file
   List info=[];
   _initData(){
     DefaultAssetBundle.of(context).loadString("jsonfile/try.json").then((value){
@@ -37,6 +39,7 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
   _initData();
   }
+  //
   @override
   Widget build(BuildContext context) {
 
@@ -91,6 +94,7 @@ class _HomePageState extends State<HomePage> {
                   itemBuilder: (_,i){
                     String? url=info[i]['img'];
                     String name=info[i]['movie'];
+                    String duration=info[i]['duration'];
                     return Row(
                       children: [
 
@@ -129,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 FlatButton(onPressed: (){
                                     Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) =>MoviePage(name: name)));
+                                      MaterialPageRoute(builder: (context) =>MoviePage(name: name, duration: duration)));
                                     },
                                     child: Text(
                                   info[i]['title'],

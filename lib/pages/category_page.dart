@@ -45,6 +45,7 @@ class _CategoryPageState extends State<CategoryPage> {
                  itemBuilder: (_,i){
                    String? url=info[i]['img'];
                    String name=info[i]['movie'];
+                   String duration=info[i]['duration'];
                    return Row(
                      children: [
 
@@ -83,7 +84,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                  children: [
                                    FlatButton(onPressed: (){
                                      Navigator.push(context,
-                                         MaterialPageRoute(builder: (context) =>MoviePage(name: name)));
+                                         MaterialPageRoute(builder: (context) =>MoviePage(name: name , duration: duration)));
                                    },
                                        child: Text(
                                          info[i]['title'],
