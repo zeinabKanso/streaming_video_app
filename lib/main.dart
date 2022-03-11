@@ -1,9 +1,8 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:video_streaming_app/MovieDataModel.dart';
 import 'package:video_streaming_app/pages/home_page.dart';
-import 'package:flutter/services.dart' as rootBundle;
+// import 'package:flutter/services.dart' as rootBundle;
 void main() {
   runApp(const MyApp());
 }

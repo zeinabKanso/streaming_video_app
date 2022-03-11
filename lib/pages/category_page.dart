@@ -15,18 +15,20 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-  List info=[];
+  List  info = [];
 
   _initData(){
     DefaultAssetBundle.of(context).loadString("jsonfile/try.json").then((value){
-      info= json.decode(value);
+      setState(() {
+        info= json.decode(value);
+      });
+
     });
   }
 
   @override
   void initState() {
     super.initState();
-    // TODO: implement initState
     _initData();
   }
 
@@ -35,13 +37,10 @@ class _CategoryPageState extends State<CategoryPage> {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.black,
-
-        body:
-
-           Container(
+        body: Container(
              child: Column(
                children: [
-             Expanded(child: ListView.builder(
+             Expanded(child:info!=null? ListView.builder(
              itemCount: info.length,
                  itemBuilder: (_,i){
                    String? url=info[i]['img'];
@@ -104,12 +103,8 @@ class _CategoryPageState extends State<CategoryPage> {
                        ),
                        SizedBox(height: 10)
                      ],
-
                    );
-
-
-
-                 })
+                 }):Center(child: CircularProgressIndicator())
       )
 
     ]

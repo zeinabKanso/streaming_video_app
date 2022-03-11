@@ -26,7 +26,10 @@ class _HomePageState extends State<HomePage> {
   List info=[];
   _initData(){
     DefaultAssetBundle.of(context).loadString("jsonfile/try.json").then((value){
-      info= json.decode(value);
+      setState((){
+        info = json.decode(value);
+      });
+
     });
   }
 @override
@@ -36,6 +39,7 @@ class _HomePageState extends State<HomePage> {
   }
   @override
   Widget build(BuildContext context) {
+
     double h=MediaQuery.of(context).size.height;
     double w=MediaQuery.of(context).size.width;
 
@@ -82,7 +86,7 @@ class _HomePageState extends State<HomePage> {
               ),
             SizedBox(height: 10),
 
-              Expanded(child: ListView.builder(
+              Expanded(child:info!=null? ListView.builder(
                 itemCount: info.length,
                   itemBuilder: (_,i){
                     String? url=info[i]['img'];
@@ -144,12 +148,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         SizedBox(height: 10)
                       ],
-
                     );
-
-
-
-                  })
+                  }):Center(child: CircularProgressIndicator())
               )
             ]
           ),
